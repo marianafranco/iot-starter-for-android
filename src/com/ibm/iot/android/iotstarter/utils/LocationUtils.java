@@ -16,6 +16,7 @@
 package com.ibm.iot.android.iotstarter.utils;
 
 import android.content.Context;
+import android.content.Intent;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -23,6 +24,10 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import com.ibm.iot.android.iotstarter.IoTStarterApplication;
+import com.ibm.iot.android.iotstarter.fragments.IoTFragment;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * LocationUtils enables and disables location services so that the application can publish latitude
@@ -36,6 +41,7 @@ public class LocationUtils implements LocationListener {
     private LocationManager locationManager;
     private Context context;
     private Criteria criteria;
+    private Timer timer;
 
     private LocationUtils(Context context) {
         this.context = context;
@@ -69,6 +75,12 @@ public class LocationUtils implements LocationListener {
         String bestProvider = locationManager.getBestProvider(criteria, false);
         locationManager.requestLocationUpdates(bestProvider, Constants.LOCATION_MIN_TIME, Constants.LOCATION_MIN_DISTANCE, this);
         app.setCurrentLocation(locationManager.getLastKnownLocation(locationProvider));
+
+        // start timer
+        if (timer == null) {
+            timer = new Timer();
+            timer.scheduleAtFixedRate(new SendLocationTimerTask(), 1000, 3000);
+        }
     }
 
     /**
@@ -80,6 +92,10 @@ public class LocationUtils implements LocationListener {
         String locationProvider = LocationManager.NETWORK_PROVIDER;
         if (locationManager.isProviderEnabled(locationProvider)) {
             locationManager.removeUpdates(this);
+        }
+
+        if (timer != null) {
+            timer.cancel();
         }
     }
 
@@ -123,5 +139,37 @@ public class LocationUtils implements LocationListener {
         criteria.setCostAllowed(true);
         criteria.setSpeedRequired(false);
         return criteria;
+    }
+
+    /**
+     * Timer task for sending location data on 3000ms intervals
+     */
+    private class SendLocationTimerTask extends TimerTask {
+
+        /**
+         * Publish an location event message.
+         */
+        @Override
+        public void run() {
+            Log.v(TAG, "SendLocationTimerTask.run() entered");
+
+            double lon = 0.0;
+            double lat = 0.0;
+            if (app.getCurrentLocation() != null) {
+                lon = app.getCurrentLocation().getLongitude();
+                lat = app.getCurrentLocation().getLatitude();
+            }
+            String messageData = MessageFactory.getLocationMessage(lon, lat);
+            String topic = TopicFactory.getEventTopic(Constants.LOCATION_EVENT);
+            MqttHandler mqttHandler = MqttHandler.getInstance(context);
+            mqttHandler.publish(topic, messageData, false, 0);
+
+            String runningActivity = app.getCurrentRunningActivity();
+            if (runningActivity != null && runningActivity.equals(IoTFragment.class.getName())) {
+                Intent actionIntent = new Intent(Constants.APP_ID + Constants.INTENT_IOT);
+                actionIntent.putExtra(Constants.INTENT_DATA, Constants.LOCATION_EVENT);
+                context.sendBroadcast(actionIntent);
+            }
+        }
     }
 }

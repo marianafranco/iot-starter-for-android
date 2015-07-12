@@ -176,9 +176,9 @@ public class LogFragment extends ListFragment {
                     openProfiles();
                 }
                 return true;
-            case R.id.action_accel:
-                app.toggleAccel();
-                return true;
+//            case R.id.action_accel:
+//                app.toggleAccel();
+//                return true;
             case R.id.clear:
                 app.setUnreadCount(0);
                 app.getMessageLog().clear();

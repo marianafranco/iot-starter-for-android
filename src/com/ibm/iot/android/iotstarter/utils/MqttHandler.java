@@ -189,7 +189,7 @@ public class MqttHandler implements MqttCallback {
      *
      * @param topic    to publish the message to
      * @param message  JSON object representation as a string
-     * @param retained true if retained flag is requred
+     * @param retained true if retained flag is required
      * @param qos      quality of service (0, 1, 2)
      */
     public void publish(String topic, String message, boolean retained, int qos) {

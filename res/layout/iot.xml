@@ -50,6 +50,7 @@
                 android:id="@+id/deviceIDIoT"
                 />
     </LinearLayout>
+    <!--
     <LinearLayout android:layout_width="match_parent"
                   android:layout_height="0dip"
                   android:layout_weight="1"
@@ -87,6 +88,37 @@
                 android:text="@string/accel_z"
                 android:id="@+id/accelZ"
                 />
+    </LinearLayout>
+    -->
+    <LinearLayout android:layout_width="match_parent"
+        android:layout_height="0dip"
+        android:layout_weight="1"
+        android:gravity="center|bottom"
+        android:orientation="vertical">
+        <TextView
+            style="@style/MyActionBarTitleText"
+            android:gravity="center"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/gps_info"
+            android:id="@+id/gpsInfo"
+            />
+        <TextView
+            style="@style/MyActionBarTitleText"
+            android:gravity="center"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/gps_lat"
+            android:id="@+id/gpsLat"
+            />
+        <TextView
+            style="@style/MyActionBarTitleText"
+            android:gravity="center"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/gps_lon"
+            android:id="@+id/gpsLon"
+            />
     </LinearLayout>
     <LinearLayout android:layout_width="match_parent"
                   android:layout_height="0dip"

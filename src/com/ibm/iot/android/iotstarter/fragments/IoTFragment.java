@@ -17,6 +17,7 @@ package com.ibm.iot.android.iotstarter.fragments;
 
 import android.app.AlertDialog;
 import android.content.*;
+import android.location.Location;
 import android.os.Bundle;
 import android.text.Editable;
 import android.util.Log;
@@ -200,6 +201,8 @@ public class IoTFragment extends IoTStarterFragment {
             processReceiveIntent();
         } else if (data.equals(Constants.ACCEL_EVENT)) {
             processAccelEvent();
+        } else if (data.equals(Constants.LOCATION_EVENT)) {
+            processLocationEvent();
         } else if (data.equals(Constants.COLOR_EVENT)) {
             Log.d(TAG, "Updating background color");
             getView().setBackgroundColor(app.getColor());
@@ -246,5 +249,22 @@ public class IoTFragment extends IoTStarterFragment {
         ((TextView) getActivity().findViewById(R.id.accelX)).setText("x: " + accelData[0]);
         ((TextView) getActivity().findViewById(R.id.accelY)).setText("y: " + accelData[1]);
         ((TextView) getActivity().findViewById(R.id.accelZ)).setText("z: " + accelData[2]);
+        Location location = app.getCurrentLocation();
+        if (location != null) {
+            ((TextView) getActivity().findViewById(R.id.gpsLat)).setText("lat: " + location.getLatitude());
+            ((TextView) getActivity().findViewById(R.id.gpsLon)).setText("lon: " + location.getLongitude());
+        }
+    }
+
+    /**
+     * Update GPS view strings
+     */
+    private void processLocationEvent() {
+        Log.v(TAG, ".processLocationEvent()");
+        Location location = app.getCurrentLocation();
+        if (location != null) {
+            ((TextView) getActivity().findViewById(R.id.gpsLat)).setText("lat: " + location.getLatitude());
+            ((TextView) getActivity().findViewById(R.id.gpsLon)).setText("lon: " + location.getLongitude());
+        }
     }
 }

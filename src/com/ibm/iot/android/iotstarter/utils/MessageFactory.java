@@ -83,4 +83,16 @@ public class MessageFactory {
         return messageData;
     }
 
+    /**
+     * Construct a JSON formatted string location event message
+     * @param lon Double containing device longitude
+     * @param lat Double containing device latitude
+     * @return String containing JSON formatted message
+     */
+    public static String getLocationMessage(double lon, double lat) {
+        String messageData = "{ \"lon\":" + lon + ", " +
+                "\"lat\":" + lat + " " +
+                "} }";
+        return messageData;
+    }
 }

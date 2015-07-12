@@ -58,6 +58,9 @@
     <string name="accel_x">x: 0.0</string>
     <string name="accel_y">y: 0.0</string>
     <string name="accel_z">z: 0.0</string>
+    <string name="gps_info">GPS Data</string>
+    <string name="gps_lat">lat: 0.0</string>
+    <string name="gps_lon">lon: 0.0</string>
     <string name="messages_published">Messages Published: 0</string>
     <string name="messages_received">Messages Received: 0</string>
     <string name="device_id_iot">Device ID: </string>

@@ -241,9 +241,9 @@ public class ProfilesActivity extends Activity {
 
         // Handle presses on the action bar items
         switch (item.getItemId()) {
-            case R.id.action_accel:
-                app.toggleAccel();
-                return true;
+//            case R.id.action_accel:
+//                app.toggleAccel();
+//                return true;
             case R.id.action_clear_profiles:
                 app.clearProfiles();
                 listAdapter.notifyDataSetInvalidated();

@@ -294,12 +294,14 @@ public class LoginFragment extends IoTStarterFragment {
         connectedString = connectedString.replace("No", "Yes");
         ((TextView) getActivity().findViewById(R.id.isConnected)).setText(connectedString);
         activateButton.setText(getResources().getString(R.string.deactivate_button));
-        if (app.isAccelEnabled()) {
-            LocationUtils locUtils = LocationUtils.getInstance(context);
-            locUtils.connect();
-            app.setDeviceSensor(DeviceSensor.getInstance(context));
-            app.getDeviceSensor().enableSensor();
-        }
+//        if (app.isAccelEnabled()) {
+//            LocationUtils locUtils = LocationUtils.getInstance(context);
+//            locUtils.connect();
+//            app.setDeviceSensor(DeviceSensor.getInstance(context));
+//            app.getDeviceSensor().enableSensor();
+//        }
+        LocationUtils locUtils = LocationUtils.getInstance(context);
+        locUtils.connect();
     }
 
     /**
@@ -312,12 +314,16 @@ public class LoginFragment extends IoTStarterFragment {
         activateButton.setEnabled(true);
         ((TextView) getActivity().findViewById(R.id.isConnected)).setText(this.getString(R.string.is_connected));
         activateButton.setText(getResources().getString(R.string.activate_button));
-        if (app.getDeviceSensor() != null && app.isAccelEnabled()) {
-            LocationUtils locUtils = LocationUtils.getInstance(context);
-            app.getDeviceSensor().disableSensor();
-            if (locUtils != null) {
-                locUtils.disconnect();
-            }
+//        if (app.getDeviceSensor() != null && app.isAccelEnabled()) {
+//            LocationUtils locUtils = LocationUtils.getInstance(context);
+//            app.getDeviceSensor().disableSensor();
+//            if (locUtils != null) {
+//                locUtils.disconnect();
+//            }
+//        }
+        LocationUtils locUtils = LocationUtils.getInstance(context);
+        if (locUtils != null) {
+            locUtils.disconnect();
         }
     }
 

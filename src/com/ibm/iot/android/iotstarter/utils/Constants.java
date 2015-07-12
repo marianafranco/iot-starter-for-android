@@ -66,6 +66,7 @@ public class Constants {
     public final static String ALERT_EVENT = "alert";
     public final static String UNREAD_EVENT = "unread";
     public final static String STATUS_EVENT = "status";
+    public final static String LOCATION_EVENT = "location";
 
     public final static String CONNECTIVITY_MESSAGE = "connectivityMessage";
     public final static String ACTION_INTENT_CONNECTIVITY_MESSAGE_RECEIVED = Constants.APP_ID + "." + "CONNECTIVITY_MESSAGE_RECEIVED";
