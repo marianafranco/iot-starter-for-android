@@ -40,7 +40,7 @@ import java.util.ArrayList;
  */
 public class MainActivity extends Activity implements ActionBar.TabListener {
     private final static String TAG = MainActivity.class.getName();
-    private DrawFragment drawFragment;
+//    private DrawFragment drawFragment;
     private LogFragment logFragment;
     private LoginFragment loginFragment;
     private IoTFragment iotFragment;
@@ -59,25 +59,25 @@ public class MainActivity extends Activity implements ActionBar.TabListener {
 
         if (tab.getText().equals(Constants.LOGIN_LABEL)) {
             fragmentTransaction.replace(R.id.fragment_container, loginFragment);
-            try {
-                fragmentTransaction.remove(drawFragment);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+//            try {
+//                fragmentTransaction.remove(drawFragment);
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
         } else if (tab.getText().equals(Constants.IOT_LABEL)) {
             fragmentTransaction.replace(R.id.fragment_container, iotFragment);
-            fragmentTransaction.replace(R.id.fragment_containerDraw, drawFragment);
-            try {
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+//            fragmentTransaction.replace(R.id.fragment_containerDraw, drawFragment);
+//            try {
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
         } else if (tab.getText().equals(Constants.LOG_LABEL)) {
             fragmentTransaction.replace(R.id.fragment_container, logFragment);
-            try {
-                fragmentTransaction.remove(drawFragment);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+//            try {
+//                fragmentTransaction.remove(drawFragment);
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
             // If switching to log tab, reset its badge value to 0
             updateBadge(tab, 0);
         }
@@ -104,11 +104,11 @@ public class MainActivity extends Activity implements ActionBar.TabListener {
             } else {
                 backStack.add(Constants.IOT_LABEL);
             }
-            try {
-                fragmentTransaction.remove(drawFragment);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+//            try {
+//                fragmentTransaction.remove(drawFragment);
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
         } else if (tab.getText().equals(Constants.LOG_LABEL)) {
             if (!backStack.isEmpty() && Constants.LOG_LABEL.equals(backStack.get(index))) {
                 backStack.remove(index);
@@ -140,7 +140,7 @@ public class MainActivity extends Activity implements ActionBar.TabListener {
         loginFragment = new LoginFragment();
         iotFragment = new IoTFragment();
         logFragment = new LogFragment();
-        drawFragment = new DrawFragment();
+//        drawFragment = new DrawFragment();
 
         // backStack used for overriding back button
         backStack = new ArrayList<String>();
