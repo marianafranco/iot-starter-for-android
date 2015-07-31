@@ -50,7 +50,7 @@ public class Constants {
     public final static String AUTH_TOKEN = "authtoken";
     public final static String DEVICE_ID = "deviceid";
     public final static String ORGANIZATION = "organization";
-    public final static String DEVICE_TYPE = "Android";
+    public final static String DEVICE_TYPE = "vehicle";
 
     // IoT topic formats
     public final static String EVENT_TOPIC = "iot-2/evt/";
@@ -66,7 +66,7 @@ public class Constants {
     public final static String ALERT_EVENT = "alert";
     public final static String UNREAD_EVENT = "unread";
     public final static String STATUS_EVENT = "status";
-    public final static String LOCATION_EVENT = "location";
+    public final static String LOCATION_EVENT = "telemetry";
 
     public final static String CONNECTIVITY_MESSAGE = "connectivityMessage";
     public final static String ACTION_INTENT_CONNECTIVITY_MESSAGE_RECEIVED = Constants.APP_ID + "." + "CONNECTIVITY_MESSAGE_RECEIVED";

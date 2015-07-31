@@ -159,7 +159,8 @@ public class LocationUtils implements LocationListener {
                 lon = app.getCurrentLocation().getLongitude();
                 lat = app.getCurrentLocation().getLatitude();
             }
-            String messageData = MessageFactory.getLocationMessage(lon, lat);
+            String deviceId = app.getDeviceId();
+            String messageData = MessageFactory.getLocationMessage(deviceId, lon, lat);
             String topic = TopicFactory.getEventTopic(Constants.LOCATION_EVENT);
             MqttHandler mqttHandler = MqttHandler.getInstance(context);
             mqttHandler.publish(topic, messageData, false, 0);

@@ -89,9 +89,17 @@ public class MessageFactory {
      * @param lat Double containing device latitude
      * @return String containing JSON formatted message
      */
-    public static String getLocationMessage(double lon, double lat) {
-        String messageData = "{ \"lon\":" + lon + ", " +
-                "\"lat\":" + lat + " " +
+    public static String getLocationMessage(String deviceId, double lon, double lat) {
+        String messageData = "{ " +
+                "\"id\":\"" + deviceId + "\", " +
+                "\"name\":\"Device " + deviceId + "\", " +
+                "\"lng\":\"" + lon + "\", " +
+                "\"lat\":\"" + lat + "\", " +
+//                "\"lng\":\"-97.73869272482814\", " +
+//                "\"lat\":\"2815581870295\", " +
+                "\"state\":\"normal\", " +
+                "\"description\":\"I am a device\", " +
+                "\"type\":\"device\"" +
                 "} }";
         return messageData;
     }
