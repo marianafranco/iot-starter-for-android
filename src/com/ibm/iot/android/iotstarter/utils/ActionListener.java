@@ -188,7 +188,7 @@ public class ActionListener implements IMqttActionListener {
      */
     private void handlePublishFailure(Throwable throwable) {
         Log.e(TAG, ".handlePublishFailure() entered");
-        Log.e(TAG, ".handlePublishFailure() - Failed with exception", throwable.getCause());
+        Log.e(TAG, ".handlePublishFailure() - Failed with exception", throwable);
     }
 
     /**

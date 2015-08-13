@@ -99,7 +99,7 @@ public class MessageFactory {
 //                "\"lat\":\"2815581870295\", " +
                 "\"state\":\"normal\", " +
                 "\"description\":\"I am a device\", " +
-                "\"type\":\"car\"" +
+                "\"type\":\"device\"" +
                 "}";
         return messageData;
     }

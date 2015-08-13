@@ -50,7 +50,7 @@ public class Constants {
     public final static String AUTH_TOKEN = "authtoken";
     public final static String DEVICE_ID = "deviceid";
     public final static String ORGANIZATION = "organization";
-    public final static String DEVICE_TYPE = "vehicle";
+    public final static String DEVICE_TYPE = "device";
 
     // IoT topic formats
     public final static String EVENT_TOPIC = "iot-2/evt/";
