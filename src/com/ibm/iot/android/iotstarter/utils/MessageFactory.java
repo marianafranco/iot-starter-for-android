@@ -93,14 +93,14 @@ public class MessageFactory {
         String messageData = "{ " +
                 "\"id\":\"" + deviceId + "\", " +
                 "\"name\":\"Device " + deviceId + "\", " +
-                "\"lng\":\"" + lon + "\", " +
-                "\"lat\":\"" + lat + "\", " +
+                "\"lng\":" + lon + ", " +
+                "\"lat\":" + lat + ", " +
 //                "\"lng\":\"-97.73869272482814\", " +
 //                "\"lat\":\"2815581870295\", " +
                 "\"state\":\"normal\", " +
                 "\"description\":\"I am a device\", " +
-                "\"type\":\"device\"" +
-                "} }";
+                "\"type\":\"car\"" +
+                "}";
         return messageData;
     }
 }
