@@ -64,7 +64,7 @@ public class LocationUtils implements LocationListener {
         Log.d(TAG, ".connect() entered");
 
         // Check if location provider is enabled
-        String locationProvider = LocationManager.NETWORK_PROVIDER;
+        String locationProvider = LocationManager.GPS_PROVIDER;
         if (locationManager.isProviderEnabled(locationProvider) == false) {
             Log.d(TAG, "Location provider not enabled.");
             app.setCurrentLocation(null);
