@@ -42,6 +42,7 @@ public class LocationUtils implements LocationListener {
     private Context context;
     private Criteria criteria;
     private Timer timer;
+    private String latestProvider;
 
     private LocationUtils(Context context) {
         this.context = context;
@@ -57,23 +58,63 @@ public class LocationUtils implements LocationListener {
         return instance;
     }
 
+
+    private String getNextProvider() {
+        String locationProvider;
+
+        boolean isGPSProviderEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        boolean isNetworkProviderEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+
+        if (!isGPSProviderEnabled) {
+            Log.i(TAG, "GPS Location provider not enabled");
+        }
+        if (!isNetworkProviderEnabled) {
+            Log.i(TAG, "Network Location provider not enabled");
+        }
+
+        if (isGPSProviderEnabled && !isNetworkProviderEnabled) {
+            locationProvider = LocationManager.GPS_PROVIDER;
+        } else if (!isGPSProviderEnabled && isNetworkProviderEnabled) {
+            locationProvider = LocationManager.NETWORK_PROVIDER;
+        } else {
+            if (LocationManager.GPS_PROVIDER.equals(latestProvider)) {
+                locationProvider = LocationManager.NETWORK_PROVIDER;
+            } else {
+                locationProvider = LocationManager.GPS_PROVIDER;
+            }
+        }
+        latestProvider = locationProvider;
+
+        return locationProvider;
+    }
+
     /**
      * Enable location services
      */
     public void connect() {
-        Log.d(TAG, ".connect() entered");
+        Log.i(TAG, ".connect() entered");
 
         // Check if location provider is enabled
-        String locationProvider = LocationManager.GPS_PROVIDER;
+        String locationProvider = getNextProvider();
+
+        app.setCurrentLocationProvider(""+locationProvider.toUpperCase());
+        String runningActivity = app.getCurrentRunningActivity();
+        if (runningActivity != null && runningActivity.equals(IoTFragment.class.getName())) {
+            Intent actionIntent = new Intent(Constants.APP_ID + Constants.INTENT_IOT);
+            actionIntent.putExtra(Constants.INTENT_DATA, Constants.INTENT_LOCATION_PR);
+            context.sendBroadcast(actionIntent);
+        }
+
         if (locationManager.isProviderEnabled(locationProvider) == false) {
-            Log.d(TAG, "Location provider not enabled.");
+            Log.i(TAG, "Location provider not enabled: " + locationProvider);
             app.setCurrentLocation(null);
             return;
         }
 
         // register for location updates
         String bestProvider = locationManager.getBestProvider(criteria, false);
-        locationManager.requestLocationUpdates(bestProvider, Constants.LOCATION_MIN_TIME, Constants.LOCATION_MIN_DISTANCE, this);
+//        locationManager.requestLocationUpdates(bestProvider, Constants.LOCATION_MIN_TIME, Constants.LOCATION_MIN_DISTANCE, this);
+        locationManager.requestLocationUpdates(bestProvider, 1000, 0, this);
         app.setCurrentLocation(locationManager.getLastKnownLocation(locationProvider));
 
         // start timer
@@ -155,10 +196,20 @@ public class LocationUtils implements LocationListener {
 
             double lon = 0.0;
             double lat = 0.0;
-            if (app.getCurrentLocation() != null) {
-                lon = app.getCurrentLocation().getLongitude();
-                lat = app.getCurrentLocation().getLatitude();
+            Location currentLocation = app.getCurrentLocation();
+
+            if (null == currentLocation) {
+                connect();
+                currentLocation = app.getCurrentLocation();
             }
+
+            if (currentLocation == null) {
+                Log.e(TAG, "Could not retrieve current location using provider "+latestProvider);
+            } else {
+                lon = currentLocation.getLongitude();
+                lat = currentLocation.getLatitude();
+            }
+
             String deviceId = app.getDeviceId();
             String messageData = MessageFactory.getLocationMessage(deviceId, lon, lat);
             String topic = TopicFactory.getEventTopic(Constants.LOCATION_EVENT);

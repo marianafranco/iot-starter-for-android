@@ -61,6 +61,7 @@ public class IoTStarterApplication extends Application {
 
     private DeviceSensor deviceSensor;
     private Location currentLocation;
+    private String currentLocationProvider = "";
     private Camera camera;
 
     // Message log for log activity
@@ -379,5 +380,13 @@ public class IoTStarterApplication extends Application {
 
     public ArrayList<String> getProfileNames() {
         return profileNames;
+    }
+
+    public String getCurrentLocationProvider() {
+        return currentLocationProvider;
+    }
+
+    public void setCurrentLocationProvider(String currentLocationProvider) {
+        this.currentLocationProvider = currentLocationProvider;
     }
 }

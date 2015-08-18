@@ -206,6 +206,8 @@ public class IoTFragment extends IoTStarterFragment {
         } else if (data.equals(Constants.COLOR_EVENT)) {
             Log.d(TAG, "Updating background color");
             getView().setBackgroundColor(app.getColor());
+        } else if (data.equals(Constants.INTENT_LOCATION_PR)) {
+            processLocationProviderEvent();
         } else if (data.equals(Constants.ALERT_EVENT)) {
             String message = intent.getStringExtra(Constants.INTENT_DATA_MESSAGE);
             new AlertDialog.Builder(getActivity())
@@ -266,5 +268,15 @@ public class IoTFragment extends IoTStarterFragment {
             ((TextView) getActivity().findViewById(R.id.gpsLat)).setText("lat: " + location.getLatitude());
             ((TextView) getActivity().findViewById(R.id.gpsLon)).setText("lon: " + location.getLongitude());
         }
+        processLocationProviderEvent();
     }
+
+    private void processLocationProviderEvent() {
+        Log.i(TAG, "### .processLocationProviderEvent()");
+        String lp = app.getCurrentLocationProvider();
+        if (lp != null) {
+            ((TextView) getActivity().findViewById(R.id.gpsInfo)).setText("GPS Data (" + lp + ")");
+        }
+    }
+
 }

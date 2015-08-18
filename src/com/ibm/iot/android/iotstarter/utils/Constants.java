@@ -76,6 +76,7 @@ public class Constants {
     public final static String INTENT_IOT = "INTENT_IOT";
     public final static String INTENT_LOG = "INTENT_LOG";
     public final static String INTENT_PROFILES = "INTENT_PROFILES";
+    public final static String INTENT_LOCATION_PR = "INTENT_LOCATION_PROVIDER";
 
     public final static String INTENT_DATA = "data";
 
