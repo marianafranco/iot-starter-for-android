@@ -22,6 +22,9 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.util.Log;
 import com.ibm.iot.android.iotstarter.IoTStarterApplication;
 import com.ibm.iot.android.iotstarter.fragments.IoTFragment;
@@ -35,6 +38,7 @@ import java.util.TimerTask;
  */
 public class LocationUtils implements LocationListener {
     private final static String TAG = LocationUtils.class.getName();
+    public static final int TIMER_PERIOD = 3000;
 
     private static LocationUtils instance;
     private IoTStarterApplication app;
@@ -43,12 +47,25 @@ public class LocationUtils implements LocationListener {
     private Criteria criteria;
     private Timer timer;
     private String latestProvider;
+    private int networkCycles = 0;
 
-    private LocationUtils(Context context) {
+    Handler mHandler = new Handler(Looper.getMainLooper()) {
+        @Override
+        public void handleMessage(Message inputMessage) {
+            System.out.println("### " + inputMessage.obj);
+            disconnectCurrentProvider();
+            getNextProvider((Boolean)inputMessage.obj);
+            connect();
+        }
+    };
+
+
+        private LocationUtils(Context context) {
         this.context = context;
         this.locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         this.criteria = getCriteria();
         this.app = (IoTStarterApplication) context.getApplicationContext();
+        getNextProvider(false);
     }
 
     public static LocationUtils getInstance(Context context) {
@@ -59,7 +76,7 @@ public class LocationUtils implements LocationListener {
     }
 
 
-    private String getNextProvider() {
+    private String getNextProvider(boolean force) {
         String locationProvider;
 
         boolean isGPSProviderEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
@@ -77,8 +94,12 @@ public class LocationUtils implements LocationListener {
         } else if (!isGPSProviderEnabled && isNetworkProviderEnabled) {
             locationProvider = LocationManager.NETWORK_PROVIDER;
         } else {
-            if (LocationManager.GPS_PROVIDER.equals(latestProvider)) {
-                locationProvider = LocationManager.NETWORK_PROVIDER;
+            if (force) {
+                if (LocationManager.GPS_PROVIDER.equals(latestProvider)) {
+                    locationProvider = LocationManager.NETWORK_PROVIDER;
+                } else {
+                    locationProvider = LocationManager.GPS_PROVIDER;
+                }
             } else {
                 locationProvider = LocationManager.GPS_PROVIDER;
             }
@@ -93,9 +114,10 @@ public class LocationUtils implements LocationListener {
      */
     public void connect() {
         Log.i(TAG, ".connect() entered");
+        System.out.println("### connect");
 
         // Check if location provider is enabled
-        String locationProvider = getNextProvider();
+        String locationProvider = latestProvider;
 
         app.setCurrentLocationProvider(""+locationProvider.toUpperCase());
         String runningActivity = app.getCurrentRunningActivity();
@@ -120,9 +142,11 @@ public class LocationUtils implements LocationListener {
         // start timer
         if (timer == null) {
             timer = new Timer();
-            timer.scheduleAtFixedRate(new SendLocationTimerTask(), 1000, 3000);
+            timer.scheduleAtFixedRate(new SendLocationTimerTask(), 1000, TIMER_PERIOD);
         }
     }
+
+
 
     /**
      * Disable location services
@@ -130,13 +154,16 @@ public class LocationUtils implements LocationListener {
     public void disconnect() {
         Log.d(TAG, ".disconnect() entered");
 
-        String locationProvider = LocationManager.NETWORK_PROVIDER;
-        if (locationManager.isProviderEnabled(locationProvider)) {
-            locationManager.removeUpdates(this);
-        }
+        disconnectCurrentProvider();
 
         if (timer != null) {
             timer.cancel();
+        }
+    }
+
+    private void disconnectCurrentProvider() {
+        if (locationManager.isProviderEnabled(latestProvider)) {
+            locationManager.removeUpdates(this);
         }
     }
 
@@ -197,9 +224,15 @@ public class LocationUtils implements LocationListener {
             double lon = 0.0;
             double lat = 0.0;
             Location currentLocation = app.getCurrentLocation();
+            String initialProvider = latestProvider;
 
             if (null == currentLocation) {
-                connect();
+//                disconnectCurrentProvider();
+//                getNextProvider(true);
+//                connect();
+                System.out.println("Trying to use other provider than "+latestProvider);
+                Message m = mHandler.obtainMessage(0, true);
+                mHandler.sendMessage(m);
                 currentLocation = app.getCurrentLocation();
             }
 
@@ -208,20 +241,36 @@ public class LocationUtils implements LocationListener {
             } else {
                 lon = currentLocation.getLongitude();
                 lat = currentLocation.getLatitude();
+                if (!LocationManager.GPS_PROVIDER.equals(initialProvider) &&
+                        !LocationManager.GPS_PROVIDER.equals(latestProvider) &&
+                        locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) &&
+                        (networkCycles++) > 60000/TIMER_PERIOD) {
+                    networkCycles = 0;
+                    System.out.println("Trying to use GPS provider");
+                    // change to GPS since it is enabled.
+//                    disconnectCurrentProvider();
+//                    getNextProvider(false);
+//                    connect();
+                    Message m = mHandler.obtainMessage(0, false);
+                    mHandler.sendMessage(m);
+                }
             }
 
-            String deviceId = app.getDeviceId();
-            String messageData = MessageFactory.getLocationMessage(deviceId, lon, lat);
-            String topic = TopicFactory.getEventTopic(Constants.LOCATION_EVENT);
-            MqttHandler mqttHandler = MqttHandler.getInstance(context);
-            mqttHandler.publish(topic, messageData, false, 0);
+            if (lon != 0.0 && lat != 0.0) {
+                String deviceId = app.getDeviceId();
+                String messageData = MessageFactory.getLocationMessage(deviceId, lon, lat);
+                String topic = TopicFactory.getEventTopic(Constants.LOCATION_EVENT);
+                MqttHandler mqttHandler = MqttHandler.getInstance(context);
+                mqttHandler.publish(topic, messageData, false, 0);
 
-            String runningActivity = app.getCurrentRunningActivity();
-            if (runningActivity != null && runningActivity.equals(IoTFragment.class.getName())) {
-                Intent actionIntent = new Intent(Constants.APP_ID + Constants.INTENT_IOT);
-                actionIntent.putExtra(Constants.INTENT_DATA, Constants.LOCATION_EVENT);
-                context.sendBroadcast(actionIntent);
+                String runningActivity = app.getCurrentRunningActivity();
+                if (runningActivity != null && runningActivity.equals(IoTFragment.class.getName())) {
+                    Intent actionIntent = new Intent(Constants.APP_ID + Constants.INTENT_IOT);
+                    actionIntent.putExtra(Constants.INTENT_DATA, Constants.LOCATION_EVENT);
+                    context.sendBroadcast(actionIntent);
+                }
             }
         }
+
     }
 }

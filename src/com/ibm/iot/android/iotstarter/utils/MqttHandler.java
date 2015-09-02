@@ -87,6 +87,7 @@ public class MqttHandler implements MqttCallback {
                     + ", client id: " + clientId);
 
             String connectionUri = "tcp://" + serverHost + ":" + serverPort;
+//            String connectionUri = "ssl://" + serverHost + ":" + 8883;
             if (client != null) {
                 client.unregisterResources();
                 client = null;
@@ -99,6 +100,12 @@ public class MqttHandler implements MqttCallback {
             // create MqttConnectOptions and set the clean session flag
             MqttConnectOptions options = new MqttConnectOptions();
             options.setCleanSession(true);
+            options.setConnectionTimeout(60 * 10);
+            options.setKeepAliveInterval(60 * 5);
+
+//            java.util.Properties sslClientProps = new java.util.Properties();
+//            sslClientProps.setProperty("com.ibm.ssl.protocol", "TLSv1.2");
+//            options.setSSLProperties(sslClientProps);
 
             if (app.getConnectionType() == Constants.ConnectionType.IOTF) {
                 options.setUserName(Constants.SETTINGS_USERNAME);
@@ -222,6 +229,8 @@ public class MqttHandler implements MqttCallback {
                 Log.e(TAG, "MqttPersistenceException caught while attempting to publish a message", e.getCause());
             } catch (MqttException e) {
                 Log.e(TAG, "MqttException caught while attempting to publish a message", e.getCause());
+            } catch (Exception e) {
+                Log.e(TAG, "Exception caught while attempting to publish a message", e);
             }
         } else {
             connectionLost(null);
@@ -239,6 +248,7 @@ public class MqttHandler implements MqttCallback {
         if (throwable != null) {
             throwable.printStackTrace();
         }
+        System.out.println(throwable);
 
         app.setConnected(false);
 

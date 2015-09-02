@@ -18,6 +18,7 @@ package com.ibm.iot.android.iotstarter.fragments;
 import android.app.AlertDialog;
 import android.content.*;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -30,7 +31,9 @@ import com.ibm.iot.android.iotstarter.IoTStarterApplication;
 import com.ibm.iot.android.iotstarter.R;
 import com.ibm.iot.android.iotstarter.activities.MainActivity;
 import com.ibm.iot.android.iotstarter.utils.Constants;
+import com.ibm.iot.android.iotstarter.utils.DeviceManager;
 import com.ibm.iot.android.iotstarter.utils.DeviceSensor;
+import com.ibm.iot.android.iotstarter.utils.IoTDevice;
 import com.ibm.iot.android.iotstarter.utils.LocationUtils;
 import com.ibm.iot.android.iotstarter.utils.MqttHandler;
 
@@ -118,15 +121,21 @@ public class LoginFragment extends IoTStarterFragment {
         // Update only if the organization is set to some non-empty string.
         if (app.getOrganization() != null) {
             ((EditText) getActivity().findViewById(R.id.organizationValue)).setText(app.getOrganization());
+        } else {
+            ((EditText) getActivity().findViewById(R.id.organizationValue)).setText("yi2gix");
         }
 
         // DeviceId should never be null at this point.
         if (app.getDeviceId() != null) {
-            ((EditText) getActivity().findViewById(R.id.deviceIDValue)).setText(app.getDeviceId());
+            ((EditText) getActivity().findViewById(R.id.apiKeyValue)).setText(app.getApiKey());
+        } else {
+            ((EditText) getActivity().findViewById(R.id.apiKeyValue)).setText("a-yi2gix-z0ni6ws4df");
         }
 
         if (app.getAuthToken() != null) {
-            ((EditText) getActivity().findViewById(R.id.authTokenValue)).setText(app.getAuthToken());
+            ((EditText) getActivity().findViewById(R.id.apiTokenValue)).setText(app.getApiToken());
+        } else {
+            ((EditText) getActivity().findViewById(R.id.apiTokenValue)).setText("I87eKuBM@Ez2*ZNVrz");
         }
 
         // Set 'Connected to IoT' to Yes if MQTT client is connected. Leave as No otherwise.
@@ -215,10 +224,54 @@ public class LoginFragment extends IoTStarterFragment {
         String buttonTitle = ((Button) getActivity().findViewById(R.id.activateButton)).getText().toString();
         MqttHandler mqttHandle = MqttHandler.getInstance(context);
         Button activateButton = (Button) getActivity().findViewById(R.id.activateButton);
-        app.setDeviceId(((EditText) getActivity().findViewById(R.id.deviceIDValue)).getText().toString());
-        app.setOrganization(((EditText) getActivity().findViewById(R.id.organizationValue)).getText().toString());
-        app.setAuthToken(((EditText) getActivity().findViewById(R.id.authTokenValue)).getText().toString());
+        String orgId = ((EditText) getActivity().findViewById(R.id.organizationValue)).getText().toString();
+        String apiKey = ((EditText) getActivity().findViewById(R.id.apiKeyValue)).getText().toString();
+        String apiToken = ((EditText) getActivity().findViewById(R.id.apiTokenValue)).getText().toString();
+        app.setOrganization(orgId);
         activateButton.setEnabled(false);
+
+        try {
+            IoTDevice device = null;
+            for (IoTDevice ioTDevice: app.getDeviceSettings()) {
+                if (ioTDevice.getProfileName().equals(Constants.DEVICE_SETTINGS + orgId)) {
+                    device = ioTDevice;
+                }
+            }
+
+            if (device != null) {
+                System.out.println("Using previously created device id for organization "+orgId);
+                connect(device.getDeviceID(), device.getAuthorizationToken());
+            } else {
+                String android_id = Settings.Secure.getString(getActivity().getApplicationContext().getContentResolver(),
+                        Settings.Secure.ANDROID_ID);
+                DeviceManager deviceManager = new DeviceManager();
+                deviceManager.setOrgId(orgId);
+                deviceManager.setApiKey(apiKey);
+                deviceManager.setApiToken(apiToken);
+                deviceManager.setLoginFragment(this);
+                deviceManager.execute(android_id);
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+            app.setConnected(false);
+            String runningActivity = app.getCurrentRunningActivity();
+            if (runningActivity != null && runningActivity.equals(LoginFragment.class.getName())) {
+                Intent actionIntent = new Intent(Constants.APP_ID + Constants.INTENT_LOGIN);
+                actionIntent.putExtra(Constants.INTENT_DATA, Constants.INTENT_DATA_DISCONNECT);
+                context.sendBroadcast(actionIntent);
+            }
+            e.printStackTrace();
+        }
+    }
+
+    public void connect(String deviceId, String authToken) {
+        String buttonTitle = ((Button) getActivity().findViewById(R.id.activateButton)).getText().toString();
+        MqttHandler mqttHandle = MqttHandler.getInstance(context);
+        Button activateButton = (Button) getActivity().findViewById(R.id.activateButton);
+
+        app.setDeviceId(deviceId);
+        app.setAuthToken(authToken);
+
         if (buttonTitle.equals(getResources().getString(R.string.activate_button)) && app.isConnected() == false) {
             if (checkCanConnect()) {
                 mqttHandle.connect();
@@ -231,6 +284,12 @@ public class LoginFragment extends IoTStarterFragment {
         }
     }
 
+    public void saveAndconnect(String deviceId, String authToken) {
+        IoTDevice device = new IoTDevice(Constants.DEVICE_SETTINGS + app.getOrganization(), app.getOrganization(), deviceId, authToken);
+        app.saveDeviceSetting(device);
+        connect(deviceId, authToken);
+    }
+
     /**
      * Toggle auth token text field secure text entry
      */
@@ -238,7 +297,7 @@ public class LoginFragment extends IoTStarterFragment {
         Log.d(TAG, ".handleShowToken() entered");
         Button showTokenButton = (Button) getActivity().findViewById(R.id.showTokenButton);
         String buttonTitle = showTokenButton.getText().toString();
-        EditText tokenText = (EditText) getActivity().findViewById(R.id.authTokenValue);
+        EditText tokenText = (EditText) getActivity().findViewById(R.id.apiTokenValue);
         if (buttonTitle.equals(getResources().getString(R.string.showToken_button))) {
             showTokenButton.setText(getResources().getString(R.string.hideToken_button));
             tokenText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);

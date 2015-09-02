@@ -40,8 +40,8 @@
     <string name="clear_profiles_label">Clear Profiles</string>
 
     <!-- Begin Login Fragment -->
-    <string name="showToken_button">Show Auth Token</string>
-    <string name="hideToken_button">Hide Auth Token</string>
+    <string name="showToken_button">Show Token</string>
+    <string name="hideToken_button">Hide Token</string>
     <string name="activate_button">Activate Sensor</string>
     <string name="deactivate_button">Deactivate Sensor</string>
 
@@ -70,12 +70,12 @@
 
     <!-- Begin Settings Activity -->
     <string name="organization_setting">Organization: </string>
-    <string name="device_id_setting">Device ID: </string>
-    <string name="auth_token_setting">Auth Token: </string>
+    <string name="api_key_setting">API Key: </string>
+    <string name="api_token_setting">API Token: </string>
 
     <string name="organization_value">Organization</string>
-    <string name="device_id_value">Device ID</string>
-    <string name="auth_token_value">Auth Token</string>
+    <string name="api_key_value">API Key</string>
+    <string name="api_token_value">API Token</string>
 
     <string name="save_button">Save Settings</string>
 

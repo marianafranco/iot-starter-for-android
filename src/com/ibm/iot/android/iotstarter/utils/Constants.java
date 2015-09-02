@@ -51,6 +51,9 @@ public class Constants {
     public final static String DEVICE_ID = "deviceid";
     public final static String ORGANIZATION = "organization";
     public final static String DEVICE_TYPE = "device";
+    public final static String API_TOKEN = "apitoken";
+    public final static String API_KEY = "apikey";
+    public final static String DEVICE_SETTINGS = "device-setttings:";
 
     // IoT topic formats
     public final static String EVENT_TOPIC = "iot-2/evt/";

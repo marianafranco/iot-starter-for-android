@@ -93,9 +93,9 @@ public class IoTStarterFragment extends Fragment {
         Log.d(TAG, ".onOptionsItemSelected() entered");
 
         if (LoginFragment.class.getName().equals(app.getCurrentRunningActivity())) {
-            app.setDeviceId(((EditText) getActivity().findViewById(R.id.deviceIDValue)).getText().toString());
+            //app.setDeviceId(((EditText) getActivity().findViewById(R.id.deviceIDValue)).getText().toString());
             app.setOrganization(((EditText) getActivity().findViewById(R.id.organizationValue)).getText().toString());
-            app.setAuthToken(((EditText) getActivity().findViewById(R.id.authTokenValue)).getText().toString());
+            //app.setAuthToken(((EditText) getActivity().findViewById(R.id.authTokenValue)).getText().toString());
         }
 
         // Handle presses on the action bar items

@@ -145,8 +145,8 @@ public class ProfilesActivity extends Activity {
             if (profile.getProfileName().equals(profileName)) {
                 app.setProfile(profile);
                 app.setOrganization(profile.getOrganization());
-                app.setDeviceId(profile.getDeviceID());
-                app.setAuthToken(profile.getAuthorizationToken());
+                app.setApiKey(profile.getApiKey());
+                app.setApiToken(profile.getApiToken());
                 break;
             }
         }

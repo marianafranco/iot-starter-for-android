@@ -26,6 +26,7 @@ import android.util.Log;
 
 import com.ibm.iot.android.iotstarter.utils.Constants;
 import com.ibm.iot.android.iotstarter.utils.DeviceSensor;
+import com.ibm.iot.android.iotstarter.utils.IoTDevice;
 import com.ibm.iot.android.iotstarter.utils.IoTProfile;
 
 import java.util.*;
@@ -42,6 +43,8 @@ public class IoTStarterApplication extends Application {
 
     // Values needed for connecting to IoT
     private String organization;
+    private String apiKey;
+    private String apiToken;
     private String deviceId;
     private String authToken;
     private Constants.ConnectionType connectionType;
@@ -70,6 +73,7 @@ public class IoTStarterApplication extends Application {
     private IoTProfile profile;
     private List<IoTProfile> profiles = new ArrayList<IoTProfile>();
     private ArrayList<String> profileNames = new ArrayList<String>();
+    private List<IoTDevice> deviceSettings = new ArrayList<IoTDevice>();
 
     /**
      * Called when the application is created. Initializes the application.
@@ -85,47 +89,9 @@ public class IoTStarterApplication extends Application {
     }
 
     /**
-     * Called when old application stored settings values are found.
-     * Converts old stored settings into new profile setting.
-     */
-    private void createNewDefaultProfile() {
-        Log.d(TAG, "organization not null. compat profile setup");
-        // If old stored property settings exist, use them to create a new default profile.
-        String organization = settings.getString(Constants.ORGANIZATION, null);
-        String deviceId = settings.getString(Constants.DEVICE_ID, null);
-        String authToken = settings.getString(Constants.AUTH_TOKEN, null);
-        IoTProfile newProfile = new IoTProfile("default", organization, deviceId, authToken);
-        this.profiles.add(newProfile);
-        this.profileNames.add("default");
-
-        // Put the new profile into the store settings and remove the old stored properties.
-        Set<String> defaultProfile = newProfile.convertToSet();
-
-        SharedPreferences.Editor editor = settings.edit();
-        editor.putStringSet(newProfile.getProfileName(), defaultProfile);
-        editor.remove(Constants.ORGANIZATION);
-        editor.remove(Constants.DEVICE_ID);
-        editor.remove(Constants.AUTH_TOKEN);
-        editor.commit();
-
-        this.setProfile(newProfile);
-        this.setOrganization(newProfile.getOrganization());
-        this.setDeviceId(newProfile.getDeviceID());
-        this.setAuthToken(newProfile.getAuthorizationToken());
-
-        return;
-    }
-
-    /**
      * Load existing profiles from application stored settings.
      */
     private void loadProfiles() {
-        // Compatability
-        if (settings.getString(Constants.ORGANIZATION, null) != null) {
-            createNewDefaultProfile();
-            return;
-        }
-
         String profileName;
         if ((profileName = settings.getString("iot:selectedprofile", null)) == null) {
             profileName = "";
@@ -136,26 +102,41 @@ public class IoTStarterApplication extends Application {
             for (String key : profileList.keySet()) {
                 if (key.equals("iot:selectedprofile")) {
                     continue;
-                }
-                Set<String> profile;// = new HashSet<String>();
-                try {
-                    // If the stored property is a Set<String> type, parse the profile and add it to the list of
-                    // profiles.
-                    if ((profile = settings.getStringSet(key, null)) != null) {
-                        Log.d(TAG, "profile name: " + key);
-                        IoTProfile newProfile = new IoTProfile(profile);
-                        this.profiles.add(newProfile);
-                        this.profileNames.add(newProfile.getProfileName());
+                } else if (key.indexOf(Constants.DEVICE_SETTINGS) != -1) {
+                    Set<String> profile;
+                    try {
+                        if ((profile = settings.getStringSet(key, null)) != null) {
+                            Log.d(TAG, "device settings name: " + key);
 
-                        if (newProfile.getProfileName().equals(profileName)) {
-                            this.setProfile(newProfile);
-                            this.setOrganization(newProfile.getOrganization());
-                            this.setDeviceId(newProfile.getDeviceID());
-                            this.setAuthToken(newProfile.getAuthorizationToken());
+                            IoTDevice newProfile = new IoTDevice(profile);
+                            this.deviceSettings.add(newProfile);
                         }
+                    } catch (Exception e) {
+                        continue;
                     }
-                } catch (Exception e) {
-                    continue;
+                } else {
+                    Set<String> profile;// = new HashSet<String>();
+                    try {
+                        // If the stored property is a Set<String> type, parse the profile and add it to the list of
+                        // profiles.
+                        if ((profile = settings.getStringSet(key, null)) != null) {
+                            Log.d(TAG, "profile name: " + key);
+
+
+                            IoTProfile newProfile = new IoTProfile(profile);
+                            this.profiles.add(newProfile);
+                            this.profileNames.add(newProfile.getProfileName());
+
+                            if (newProfile.getProfileName().equals(profileName)) {
+                                this.setProfile(newProfile);
+                                this.setOrganization(newProfile.getOrganization());
+                                this.setApiKey(newProfile.getApiKey());
+                                this.setApiToken(newProfile.getApiToken());
+                            }
+                        }
+                    } catch (Exception e) {
+                        continue;
+                    }
                 }
             }
         }
@@ -240,6 +221,18 @@ public class IoTStarterApplication extends Application {
         this.profileNames.add(profile.getProfileName());
     }
 
+    public void saveDeviceSetting(IoTDevice device) {
+        // Put the new profile into the store settings and remove the old stored properties.
+        Set<String> profileSet = device.convertToSet();
+
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putStringSet(device.getProfileName(), profileSet);
+        editor.commit();
+        System.out.println("Saved device settings for organization "+device.getOrganization());
+
+        this.deviceSettings.add(device);
+    }
+
     /**
      * Remove all saved profile information.
      */
@@ -279,6 +272,22 @@ public class IoTStarterApplication extends Application {
 
     public void setAuthToken(String authToken) {
         this.authToken = authToken;
+    }
+
+    public String getApiKey() {
+        return apiKey;
+    }
+
+    public void setApiKey(String apiKey) {
+        this.apiKey = apiKey;
+    }
+
+    public String getApiToken() {
+        return apiToken;
+    }
+
+    public void setApiToken(String apiToken) {
+        this.apiToken = apiToken;
     }
 
     public void setConnectionType(Constants.ConnectionType type) {
@@ -376,6 +385,10 @@ public class IoTStarterApplication extends Application {
 
     public List<IoTProfile> getProfiles() {
         return profiles;
+    }
+
+    public List<IoTDevice> getDeviceSettings() {
+        return deviceSettings;
     }
 
     public ArrayList<String> getProfileNames() {

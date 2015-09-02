@@ -19,25 +19,25 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-public class IoTProfile {
+public class IoTDevice {
     private String profileName;
     private String organization;
-    private String apiKey;
-    private String apiToken;
+    private String deviceID;
+    private String authorizationToken;
 
     private static final String NAME_PREFIX = "name:";
     private static final String ORG_PREFIX = "org:";
-    private static final String API_KEY_PREFIX = "apiKey:";
-    private static final String API_TOKEN_PREFIX = "apiToken:";
+    private static final String DEVICE_ID_PREFIX = "deviceId:";
+    private static final String AUTH_TOKEN_PREFIX = "authToken:";
 
-    public IoTProfile(String profileName, String organization, String apiKey, String apiToken) {
+    public IoTDevice(String profileName, String organization, String deviceID, String authorizationToken) {
         this.profileName = profileName;
         this.organization = organization;
-        this.apiKey = apiKey;
-        this.apiToken = apiToken;
+        this.deviceID = deviceID;
+        this.authorizationToken = authorizationToken;
     }
 
-    public IoTProfile(Set<String> profileSet) {
+    public IoTDevice(Set<String> profileSet) {
         Iterator<String> iter = profileSet.iterator();
         while (iter.hasNext()) {
             String value = iter.next();
@@ -45,10 +45,10 @@ public class IoTProfile {
                 this.profileName = value.substring(NAME_PREFIX.length());
             } else if (value.contains(ORG_PREFIX)) {
                 this.organization = value.substring(ORG_PREFIX.length());
-            } else if (value.contains(API_KEY_PREFIX)) {
-                this.apiKey = value.substring(API_KEY_PREFIX.length());
-            } else if (value.contains(API_TOKEN_PREFIX)) {
-                this.apiToken = value.substring(API_TOKEN_PREFIX.length());
+            } else if (value.contains(DEVICE_ID_PREFIX)) {
+                this.deviceID = value.substring(DEVICE_ID_PREFIX.length());
+            } else if (value.contains(AUTH_TOKEN_PREFIX)) {
+                this.authorizationToken = value.substring(AUTH_TOKEN_PREFIX.length());
             }
         }
     }
@@ -58,8 +58,8 @@ public class IoTProfile {
         Set<String> profileSet = new HashSet<String>();
         profileSet.add(NAME_PREFIX + this.profileName);
         profileSet.add(ORG_PREFIX + this.organization);
-        profileSet.add(API_KEY_PREFIX + this.apiKey);
-        profileSet.add(API_TOKEN_PREFIX + this.apiToken);
+        profileSet.add(DEVICE_ID_PREFIX + this.deviceID);
+        profileSet.add(AUTH_TOKEN_PREFIX + this.authorizationToken);
 
         return profileSet;
     }
@@ -72,11 +72,11 @@ public class IoTProfile {
         return organization;
     }
 
-    public String getApiKey() {
-        return apiKey;
+    public String getDeviceID() {
+        return deviceID;
     }
 
-    public String getApiToken() {
-        return apiToken;
+    public String getAuthorizationToken() {
+        return authorizationToken;
     }
 }

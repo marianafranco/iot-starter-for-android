@@ -65,8 +65,8 @@
                 android:paddingBottom="@dimen/activity_setting_margin"
                 android:paddingRight="@dimen/activity_horizontal_margin"
                 android:paddingLeft="@dimen/activity_horizontal_margin"
-                android:text="@string/device_id_setting"
-                android:id="@+id/deviceIDSetting"
+                android:text="@string/api_key_setting"
+                android:id="@+id/apiKeySetting"
                 />
         <EditText
                 style="@style/MyActionBarTitleText"
@@ -78,9 +78,9 @@
                 android:paddingBottom="@dimen/activity_setting_margin"
                 android:paddingRight="@dimen/activity_horizontal_margin"
                 android:paddingLeft="@dimen/activity_horizontal_margin"
-                android:hint="@string/device_id_value"
+                android:hint="@string/api_key_value"
                 android:inputType="text"
-                android:id="@+id/deviceIDValue"
+                android:id="@+id/apiKeyValue"
                 />
         <TextView
                 style="@style/MyActionBarTitleText"
@@ -92,8 +92,8 @@
                 android:paddingRight="@dimen/activity_horizontal_margin"
                 android:paddingLeft="@dimen/activity_horizontal_margin"
                 android:textAlignment="center"
-                android:text="@string/auth_token_setting"
-                android:id="@+id/authTokenSetting"
+                android:text="@string/api_token_setting"
+                android:id="@+id/apiTokenSetting"
                 />
         <EditText
                 style="@style/MyActionBarTitleText"
@@ -105,9 +105,9 @@
                 android:paddingBottom="@dimen/activity_setting_margin"
                 android:paddingRight="@dimen/activity_horizontal_margin"
                 android:paddingLeft="@dimen/activity_horizontal_margin"
-                android:hint="@string/auth_token_value"
+                android:hint="@string/api_token_value"
                 android:inputType="textPassword"
-                android:id="@+id/authTokenValue"
+                android:id="@+id/apiTokenValue"
                 />
         <Button
             style="@style/SmallButton"
