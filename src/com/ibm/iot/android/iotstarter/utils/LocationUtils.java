@@ -60,7 +60,7 @@ public class LocationUtils implements LocationListener {
     };
 
 
-        private LocationUtils(Context context) {
+    private LocationUtils(Context context) {
         this.context = context;
         this.locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         this.criteria = getCriteria();
@@ -231,7 +231,7 @@ public class LocationUtils implements LocationListener {
 //                getNextProvider(true);
 //                connect();
                 System.out.println("Trying to use other provider than "+latestProvider);
-                Message m = mHandler.obtainMessage(0, true);
+                Message m = mHandler.obtainMessage(0, Boolean.TRUE);
                 mHandler.sendMessage(m);
                 currentLocation = app.getCurrentLocation();
             }
@@ -251,7 +251,7 @@ public class LocationUtils implements LocationListener {
 //                    disconnectCurrentProvider();
 //                    getNextProvider(false);
 //                    connect();
-                    Message m = mHandler.obtainMessage(0, false);
+                    Message m = mHandler.obtainMessage(0, Boolean.FALSE);
                     mHandler.sendMessage(m);
                 }
             }

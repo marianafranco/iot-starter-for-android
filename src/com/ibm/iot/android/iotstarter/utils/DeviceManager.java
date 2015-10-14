@@ -46,7 +46,7 @@ public class DeviceManager extends AsyncTask<String, Integer, Long> {
 
         con.setRequestProperty("Authorization", basicAuth);
 
-        //add reuqest header
+        //add request header
         con.setRequestMethod("POST");
 
         String rawData = "{\"type\": \"device\", \"id\": \""+id+"\"}";
@@ -86,7 +86,7 @@ public class DeviceManager extends AsyncTask<String, Integer, Long> {
         System.out.println("Post parameters : " + rawData);
         System.out.println("Response Code : " + responseCode);
 
-        if (responseCode != 403 && responseCode != 401) {
+        if (responseCode != 403 && responseCode != 401 && responseCode != 409) {
             BufferedReader in = new BufferedReader(
                     new InputStreamReader(con.getInputStream()));
             String inputLine;
@@ -105,10 +105,55 @@ public class DeviceManager extends AsyncTask<String, Integer, Long> {
             String deviceToken = jsonObject.getString("password");
             loginFragment.saveAndconnect(deviceId, deviceToken);
         } else if (responseCode == 409) {
-            throw new RuntimeException("Device is already registered.");
+//            throw new RuntimeException("Device is already registered.");
+            System.out.println("Device is already registered. Deleting and registering it again...");
+            deleteDevice(id);
+            return createDevice(id);
         } else {
             throw new RuntimeException("Could not register device: "+responseCode);
         }
+
+        return 100L;
+    }
+
+    public Long deleteDevice(String id) throws Exception {
+        String url = "https://internetofthings.ibmcloud.com/api/v0001/organizations/"+orgId+"/devices/device/" +id;
+        URL obj = new URL(url);
+        HttpsURLConnection con = (HttpsURLConnection) obj.openConnection();
+
+        String userpass = apiKey + ":" + apiToken;
+        System.out.println("orgId: " + orgId);
+        System.out.println("API credentials: " + userpass);
+        String basicAuth = "Basic " + new String(Base64.encode(userpass.getBytes(), Base64.DEFAULT));
+        String type = "application/json";
+
+        System.out.println("Authorization "+ basicAuth);
+
+        con.setRequestProperty("Authorization", basicAuth);
+
+        //add request header
+        con.setRequestMethod("DELETE");
+
+        String rawData = "{\"type\": \"device\", \"id\": \""+id+"\"}";
+        String encodedData = URLEncoder.encode(rawData, "UTF-8");
+
+        System.out.println("### encodedData "+encodedData);
+
+        // Send post request
+        con.setDoOutput(true);
+        con.setRequestProperty("Content-Type", type);
+        con.setRequestProperty( "Content-Length", String.valueOf(rawData.length()));
+
+        DataOutputStream wr = new DataOutputStream(con.getOutputStream());
+
+        wr.writeBytes(rawData);
+        wr.flush();
+        wr.close();
+
+        int responseCode = con.getResponseCode();
+        System.out.println("\nSending 'DELETE' request to URL : " + url);
+        System.out.println("DELETE parameters : " + rawData);
+        System.out.println("Response Code : " + responseCode);
 
         return 100L;
     }
