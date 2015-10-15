@@ -108,13 +108,13 @@ public class IoTFragment extends IoTStarterFragment {
         updateViewStrings();
 
         // setup button listeners
-        Button button = (Button) getActivity().findViewById(R.id.sendText);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                handleSendText();
-            }
-        });
+//        Button button = (Button) getActivity().findViewById(R.id.sendText);
+//        button.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                handleSendText();
+//            }
+//        });
     }
 
     /**
@@ -248,9 +248,9 @@ public class IoTFragment extends IoTStarterFragment {
     private void processAccelEvent() {
         Log.v(TAG, ".processAccelEvent()");
         float[] accelData = app.getAccelData();
-        ((TextView) getActivity().findViewById(R.id.accelX)).setText("x: " + accelData[0]);
-        ((TextView) getActivity().findViewById(R.id.accelY)).setText("y: " + accelData[1]);
-        ((TextView) getActivity().findViewById(R.id.accelZ)).setText("z: " + accelData[2]);
+//        ((TextView) getActivity().findViewById(R.id.accelX)).setText("x: " + accelData[0]);
+//        ((TextView) getActivity().findViewById(R.id.accelY)).setText("y: " + accelData[1]);
+//        ((TextView) getActivity().findViewById(R.id.accelZ)).setText("z: " + accelData[2]);
         Location location = app.getCurrentLocation();
         if (location != null) {
             ((TextView) getActivity().findViewById(R.id.gpsLat)).setText("lat: " + location.getLatitude());
@@ -268,6 +268,9 @@ public class IoTFragment extends IoTStarterFragment {
             ((TextView) getActivity().findViewById(R.id.gpsLat)).setText("lat: " + location.getLatitude());
             ((TextView) getActivity().findViewById(R.id.gpsLon)).setText("lon: " + location.getLongitude());
         }
+        int sensorValue = app.getSensorValue();
+        ((TextView) getActivity().findViewById(R.id.sensorData)).setText("value: " + sensorValue);
+
         processLocationProviderEvent();
     }
 

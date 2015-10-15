@@ -61,33 +61,47 @@
                 android:gravity="center"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/accel_info"
-                android:id="@+id/accelInfo"
+                android:text="@string/gps_info"
+                android:id="@+id/gpsInfo"
                 />
         <TextView
                 style="@style/MyActionBarTitleText"
                 android:gravity="center"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/accel_x"
-                android:id="@+id/accelX"
+                android:text="@string/gps_lat"
+                android:id="@+id/gpsLat"
                 />
         <TextView
                 style="@style/MyActionBarTitleText"
                 android:gravity="center"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/accel_y"
-                android:id="@+id/accelY"
+                android:text="@string/gps_lon"
+                android:id="@+id/gpsLon"
                 />
+    </LinearLayout>
+    <LinearLayout android:layout_width="match_parent"
+        android:layout_height="0dip"
+        android:layout_weight="0.5"
+        android:gravity="center"
+        android:orientation="vertical">
         <TextView
-                style="@style/MyActionBarTitleText"
-                android:gravity="center"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/accel_z"
-                android:id="@+id/accelZ"
-                />
+            style="@style/MyActionBarTitleText"
+            android:gravity="center"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/sensor_info"
+            android:id="@+id/sensorInfo"
+            />
+        <TextView
+            style="@style/MyActionBarTitleText"
+            android:gravity="center"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/sensor_data"
+            android:id="@+id/sensorData"
+            />
     </LinearLayout>
     <LinearLayout android:layout_width="match_parent"
                   android:layout_height="0dip"
@@ -114,11 +128,11 @@
                 android:text="@string/messages_received"
                 android:id="@+id/messagesReceivedView"
                 />
-        <Button
-                style="@style/BottomButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/sendText"
-                android:text="@string/send_text"/>
+        <!--<Button-->
+                <!--style="@style/BottomButton"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:id="@+id/sendText"-->
+                <!--android:text="@string/send_text"/>-->
     </LinearLayout>
 </LinearLayout>

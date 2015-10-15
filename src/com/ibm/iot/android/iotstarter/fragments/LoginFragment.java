@@ -33,6 +33,7 @@ import com.ibm.iot.android.iotstarter.activities.MainActivity;
 import com.ibm.iot.android.iotstarter.utils.Constants;
 import com.ibm.iot.android.iotstarter.utils.DeviceManager;
 import com.ibm.iot.android.iotstarter.utils.DeviceSensor;
+import com.ibm.iot.android.iotstarter.utils.FakeSensor;
 import com.ibm.iot.android.iotstarter.utils.IoTDevice;
 import com.ibm.iot.android.iotstarter.utils.LocationUtils;
 import com.ibm.iot.android.iotstarter.utils.MqttHandler;
@@ -361,6 +362,9 @@ public class LoginFragment extends IoTStarterFragment {
 //        }
         LocationUtils locUtils = LocationUtils.getInstance(context);
         locUtils.connect();
+
+        FakeSensor sensor = FakeSensor.getInstance(context);
+        sensor.enableSensor();
     }
 
     /**
@@ -384,6 +388,9 @@ public class LoginFragment extends IoTStarterFragment {
         if (locUtils != null) {
             locUtils.disconnect();
         }
+
+        FakeSensor sensor = FakeSensor.getInstance(context);
+        sensor.disableSensor();
     }
 
 }

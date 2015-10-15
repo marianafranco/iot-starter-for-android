@@ -158,6 +158,7 @@ public class LocationUtils implements LocationListener {
 
         if (timer != null) {
             timer.cancel();
+            timer = null;
         }
     }
 
@@ -258,7 +259,8 @@ public class LocationUtils implements LocationListener {
 
             if (lon != 0.0 && lat != 0.0) {
                 String deviceId = app.getDeviceId();
-                String messageData = MessageFactory.getLocationMessage(deviceId, lon, lat);
+                int sensorValue = app.getSensorValue();
+                String messageData = MessageFactory.getLocationMessage(deviceId, lon, lat, sensorValue);
                 String topic = TopicFactory.getEventTopic(Constants.LOCATION_EVENT);
                 MqttHandler mqttHandler = MqttHandler.getInstance(context);
                 mqttHandler.publish(topic, messageData, false, 0);

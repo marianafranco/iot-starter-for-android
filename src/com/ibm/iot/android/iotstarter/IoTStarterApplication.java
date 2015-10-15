@@ -66,6 +66,7 @@ public class IoTStarterApplication extends Application {
     private Location currentLocation;
     private String currentLocationProvider = "";
     private Camera camera;
+    private int sensorValue;
 
     // Message log for log activity
     private ArrayList<String> messageLog = new ArrayList<String>();
@@ -228,7 +229,7 @@ public class IoTStarterApplication extends Application {
         SharedPreferences.Editor editor = settings.edit();
         editor.putStringSet(device.getProfileName(), profileSet);
         editor.commit();
-        System.out.println("Saved device settings for organization "+device.getOrganization());
+        System.out.println("Saved device settings for organization " + device.getOrganization());
 
         this.deviceSettings.add(device);
     }
@@ -401,5 +402,13 @@ public class IoTStarterApplication extends Application {
 
     public void setCurrentLocationProvider(String currentLocationProvider) {
         this.currentLocationProvider = currentLocationProvider;
+    }
+
+    public int getSensorValue() {
+        return sensorValue;
+    }
+
+    public void setSensorValue(int sensorValue) {
+        this.sensorValue = sensorValue;
     }
 }

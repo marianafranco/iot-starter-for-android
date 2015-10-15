@@ -121,6 +121,28 @@
             />
     </LinearLayout>
     <LinearLayout android:layout_width="match_parent"
+        android:layout_height="0dip"
+        android:layout_weight="0.40"
+        android:gravity="center|bottom"
+        android:orientation="vertical">
+        <TextView
+            style="@style/MyActionBarTitleText"
+            android:gravity="center"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/sensor_info"
+            android:id="@+id/sensorInfo"
+            />
+        <TextView
+            style="@style/MyActionBarTitleText"
+            android:gravity="center"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/sensor_data"
+            android:id="@+id/sensorData"
+            />
+    </LinearLayout>
+    <LinearLayout android:layout_width="match_parent"
                   android:layout_height="0dip"
                   android:layout_weight="1"
                   android:gravity="center|bottom"
@@ -145,12 +167,12 @@
                 android:text="@string/messages_received"
                 android:id="@+id/messagesReceivedView"
                 />
-        <Button
-                style="@style/BottomButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingTop="@dimen/activity_vertical_margin"
-                android:id="@+id/sendText"
-                android:text="@string/send_text"/>
+        <!--<Button-->
+                <!--style="@style/BottomButton"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:paddingTop="@dimen/activity_vertical_margin"-->
+                <!--android:id="@+id/sendText"-->
+                <!--android:text="@string/send_text"/>-->
     </LinearLayout>
 </LinearLayout>
